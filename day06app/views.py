@@ -5,8 +5,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import settings
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from day06app.models import User
-
 """
 Django视图模式两种：
 FBV: 函数视图  function base view  基于函数定义的逻辑视图
@@ -142,18 +144,22 @@ class UserView(View):
             })
 
 
-
 # 开发基于drf的视图
 class UserAPIView(APIView):
+    # 单独为某个视图指定渲染器  局部使用
+    # 局部的要比全局的优先级高
+    renderer_classes = (BrowsableAPIRenderer,)
 
     def get(self, request, *args, **kwargs):
+        user_id = kwargs.get("pk")
+        user_val = User.objects.get(pk=user_id)
         # request：<rest_framework.request.Request>
         # get(self, request, *args, **kwargs):  DRF视图中的request事 经过封装后的request对象  其中包含原生的request
         # 可以通过_request 访问Django原生的request对象
-        print(request._request.GET)
+        # print(request._request.GET)
         # 通过DRF 的request对象获取参数
-        print(request.GET)
-        # 通过quer_params来获取参数
+        # print(request.GET)
+        # 通过query_params来获取参数
         print(request.query_params)
 
         # 获取路径传参
@@ -169,3 +175,16 @@ class UserAPIView(APIView):
         print(request.data)
 
         return Response("POST GET SUCCESS")
+
+
+class StudentAPIView(APIView):
+    # 局部使用解析器
+    parser_classes = [MultiPartParser]
+
+    def post(self, request, *args, **kwargs):
+        print("POST方法")
+
+        # print(request.POST)
+        print(request.data)
+
+        return Response("POST方法访问成功")

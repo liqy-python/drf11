@@ -1,6 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 
 .idea
-db.sqlite3
-pycharm_drf/
-day06app/__pycache__/
+

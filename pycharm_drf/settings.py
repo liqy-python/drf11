@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'day06app'
+    'day06app',
+    'day07api',
+    'day07homework',
 ]
 
 MIDDLEWARE = [
@@ -121,3 +123,26 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+# 配置DRF的相关参数
+REST_FRAMEWORK = {
+    # 配置DRF全局的渲染器
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',  # json格式的渲染器
+        # 'rest_framework.renderers.BrowsableAPIRenderer',    # 浏览器渲染  可视化的API
+        # 'rest_framework.renderers.TemplateHTMLRenderer',    # 指定页面返回
+    ],
+    # 配置全局的解析器
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',  # json解析器
+        'rest_framework.parsers.FormParser',  # www-url-encode
+        'rest_framework.parsers.MultiPartParser'  # 只支持表单参数解析  formata
+    ],
+    # 全局异常处理的方法
+    # 'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    # 'EXCEPTION_HANDLER': 'utils.exceptions.exception_handler',  # 使用自定的异常
+}
+
+# 静态资源的目录
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
+MEDIA_URL = "/media/"

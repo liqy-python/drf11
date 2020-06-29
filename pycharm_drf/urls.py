@@ -15,8 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls import url
+from django.views.static import serve
 
+from pycharm_drf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('app/', include("day06app.urls")),
+    path('api/', include("day07api.urls")),
+    path('homework/', include("day07homework.urls")),
+    # 指定图片上传的目录
+    url(r"^media/(?P<path>.*)", serve, {"document_root": settings.MEDIA_ROOT}),
 ]
