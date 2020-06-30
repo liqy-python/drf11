@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 
 # 定义序列化器类 跟模型moles对应的
 from day07api.models import Employee
@@ -56,7 +56,7 @@ class EmployeeDeSerializer(serializers.Serializer):
     # 添加反序列化校验规则
     username = serializers.CharField(
         max_length=8,
-        min_length=4,
+        min_length=2,
         error_messages={
             "max_length": "长度太长了",
             "min_length": "长度太短了",
@@ -65,9 +65,27 @@ class EmployeeDeSerializer(serializers.Serializer):
     password = serializers.CharField(required=False)
     phone = serializers.CharField()
 
+    # 自定义字段  重复密码
+    re_pwd = serializers.CharField()
     # 想要完成新增员工  必须重写create()方法
     # 继承的serializer类并没有新增做具体的实现
+
+    # 局部校验钩子：可以对反序列化中某个字段进行校验
+    def validate_username(self, value):
+        # 自定义用户名校验规则
+        if "1" in value:
+            raise exceptions.ValidationError("用户名有误")
+        return value
+
+    # 全局校验钩子  可以通过attrs获取到前台发送的所有的参数
+    def validate(self, attrs):
+        pwd = attrs.get("password")
+        re_pwd = attrs.pop("re_pwd")
+        # 自定义规则  两次密码如果不一致  则无法保存
+        if pwd != re_pwd:
+            raise exceptions.ValidationError("两次密码不一致")
+        return attrs
+
     def create(self, validated_data):
-        # 方法中完成新增
-        # print(validated_data)
+        print(validated_data)
         return Employee.objects.create(**validated_data)

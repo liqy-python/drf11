@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'day06app',
     'day07api',
     'day07homework',
+    'day08api',
 ]
 
 MIDDLEWARE = [
@@ -139,7 +140,7 @@ REST_FRAMEWORK = {
     ],
     # 全局异常处理的方法
     # 'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
-    # 'EXCEPTION_HANDLER': 'utils.exceptions.exception_handler',  # 使用自定的异常
+    'EXCEPTION_HANDLER': 'utils.exceptions.exception_handler',  # 使用自定的异常
 }
 
 # 静态资源的目录
