@@ -14,9 +14,7 @@ from .serializers import StuSerializer, StuDeSerializer
 class StudentAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
-
         user_id = kwargs.get("pk")
-
         if user_id:
             # 查询单个
             stu_obj = Stu.objects.get(pk=user_id)
