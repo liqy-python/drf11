@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'day07api',
     'day07homework',
     'day08api',
+    'day09'
 ]
 
 MIDDLEWARE = [

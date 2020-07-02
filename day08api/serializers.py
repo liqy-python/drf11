@@ -47,7 +47,6 @@ class BookDeModelSerializer(serializers.ModelSerializer):
     """
     反序列器  数据入库使用
     """
-
     class Meta:
         model = Book
         fields = ("book_name", "price", "publish", "authors")
@@ -56,7 +55,7 @@ class BookDeModelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "book_name": {
                 "required": True,  # 设置为必填字段
-                "min_length": 3,  # 最小长度
+                "min_length": 2,  # 最小长度
                 "error_messages": {
                     "required": "图书名是必填的",
                     "min_length": "长度不够，太短啦~"
@@ -77,21 +76,35 @@ class BookDeModelSerializer(serializers.ModelSerializer):
     # 全局校验钩子  可以通过attrs获取到前台发送的所有的参数
     def validate(self, attrs):
         # 可以对前端发送的所有数据进行自定义校验
-        # print(self, "当前实例所使用的反序列化器")
         pwd = attrs.get("password")
         re_pwd = attrs.pop("re_pwd")
-        # 自定义规则  两次密码如果不一致  则无法保存
+        # 两次密码不一致  无法保存
         if pwd != re_pwd:
             raise exceptions.ValidationError("两次密码不一致")
-
         return attrs
+
+
+# ListSerializer序列化器在定义完后需要使用才生效,放在前面
+class BookListSerializer(serializers.ListSerializer):
+    # 使用此序列化器完成修改多个对象
+    def update(self, instance, validated_data):
+        # 当前调用序列化器类  要修改的对象 要修改的数据
+        print(type(self),instance,validated_data,type(self.child))
+        # TODO 将群改 改变成一次改一个  遍历修改
+        for index, obj in enumerate(instance):
+            # 每遍历一次 就修改一个对象的数据
+            self.child.update(obj, validated_data[index])
+        return instance
 
 
 class BookModelSerializerV2(serializers.ModelSerializer):
     class Meta:
         model = Book
-        # fields应该填写哪些字段  应该填写序列化与反序列化字段的并集
+        # fields应该填写序列化与反序列化字段的并集
         fields = ("book_name", "price", "publish", "authors", "pic")
+
+        # 为修改多个图书对象提供ListSerializer
+        list_serializer_class = BookListSerializer
 
         # 添加DRF所提供的校验规则
         # 通过此参数指定哪些字段是参与序列化的  哪些字段是参与反序列化的
@@ -121,6 +134,9 @@ class BookModelSerializerV2(serializers.ModelSerializer):
         # 自定义用户名校验规则
         if "1" in value:
             raise exceptions.ValidationError("图书名含有敏感字")
+        # 可以通过context 获取到viw传递过来的request对象
+        request = self.context.get("request")
+        print(request)
         return value
 
     # 全局校验钩子  可以通过attrs获取到前台发送的所有的参数
@@ -128,5 +144,7 @@ class BookModelSerializerV2(serializers.ModelSerializer):
         price = attrs.get("price", 0)
         # 没有获取到 price  所以是 NoneType
         if price > 90:
-            raise exceptions.ValidationError("超过设定的最高价钱~")
+            raise exceptions.ValidationError("超过设定的最高价钱~~")
         return attrs
+
+

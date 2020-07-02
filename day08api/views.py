@@ -154,32 +154,83 @@ class BookAPIViewV2(APIView):
             "results": BookModelSerializerV2(book_obj).data
         })
 
-    def patch(self, request, *args, **kwargs):
-        """
-        完成单个对象的局部修改
-        修改对象的某些字段
-        """
-        request_data = request.data
-        book_id = kwargs.get("id")
+    # def patch(self, request, *args, **kwargs):
+    #     """
+    #     完成单个对象的局部修改
+    #     修改对象的某些字段
+    #     """
+    #     request_data = request.data
+    #     book_id = kwargs.get("id")
+    #
+    #     try:
+    #         book_obj = Book.objects.get(pk=book_id)
+    #     except:
+    #         return Response({
+    #             "status": status.HTTP_400_BAD_REQUEST,
+    #             "message": "图书不存在"
+    #         })
+    #     # TODO 如果是修改 需要指定instance参数
+    #     # TODO 如果是修改局部需要指定 partial=True  代表可以修改局部字段
+    #     book_ser = BookModelSerializerV2(data=request_data, instance=book_obj, partial=True)
+    #     book_ser.is_valid(raise_exception=True)
+    #
+    #     book_ser.save()
+    #
+    #     return Response({
+    #         "status": status.HTTP_400_BAD_REQUEST,
+    #         "message": "更新成功",
+    #         "results": BookModelSerializerV2(book_obj).data
+    #     })
 
-        try:
-            book_obj = Book.objects.get(pk=book_id)
-        except:
+    def patch(self,request,*args,**kwargs):
+        request_data=request.data
+        book_id = kwargs.get("id")
+        # 如果id存在且传递的参数是字典   修改单个
+        if book_id and isinstance(request_data, dict):
+            book_id = [book_id,]
+            request_data = [request_data]
+
+        # 如果id不存在且参数是列表 修改多个
+        elif not book_id and isinstance(request_data, list):
+            book_ids = []
+            # 创建空列表，将要修改的图书的id取出放进 book_ids中
+            for dic in request_data:
+                pk = dic.pop("pk", None)
+                if pk:
+                    book_ids.append(pk)
+                else:
+                    return Response({
+                        "status": status.HTTP_400_BAD_REQUEST,
+                        "message": "PK不存在",
+                    })
+        else:
             return Response({
                 "status": status.HTTP_400_BAD_REQUEST,
-                "message": "图书不存在"
+                "message": "数据格式有误",
             })
-        # TODO 如果是修改 需要指定instance参数
-        # TODO 如果是修改局部需要指定 partial=True  代表可以修改局部字段
-        book_ser = BookModelSerializerV2(data=request_data, instance=book_obj, partial=True)
-        book_ser.is_valid(raise_exception=True)
 
+        book_list = []  # 所有要修改的图书对象
+        new_data = []  # 所有要修改的参数
+        # TODO 禁止在循环中对列表的长度做改变
+        for index, pk in enumerate(book_ids):
+            try:
+                book_obj = Book.objects.get(pk=pk)
+                book_list.append(book_obj)
+                new_data.append(request_data[index])
+                # print(request_data[index])
+            except:
+                # 如果图书对象不存在  则将id与对应数据都移除   错误
+                # index = book_ids.index(pk)
+                # request_data.pop(index)
+                continue
+
+        book_ser = BookModelSerializerV2(data=new_data, instance=book_list, partial=True, many=True)
+        book_ser.is_valid(raise_exception=True)
         book_ser.save()
 
         return Response({
-            "status": status.HTTP_400_BAD_REQUEST,
-            "message": "更新成功",
-            "results": BookModelSerializerV2(book_obj).data
+            "status": status.HTTP_200_OK,
+            "message": "修改成功",
         })
 
 
