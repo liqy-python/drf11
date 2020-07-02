@@ -50,7 +50,8 @@ class BookAPIViewV2(APIView):
     def get(self, request, *args, **kwargs):
         book_id = kwargs.get("id")
         if book_id:
-            book_obj = Book.objects.filter(pk=book_id, is_delete=False)
+            book_obj = Book.objects.get(pk=book_id, is_delete=False)
+            print(book_obj)
             book_ser = BookModelSerializerV2(book_obj).data
             return Response({
                 "status": status.HTTP_200_OK,

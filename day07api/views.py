@@ -60,7 +60,8 @@ class EmployeeAPIView(APIView):
         serializer = EmployeeDeSerializer(data=user_data)
         # print(serializer)
         print(serializer.is_valid())
-        # # 对序列化的数据进行校验  通过is_valid() 方法对传递过来的参数进行校验  校验合法返回True
+        # 对序列化的数据进行校验  通过is_valid() 方法对传递过来的参数进行校验  校验合法返回True
+        print(serializer.is_valid())
         if serializer.is_valid():
             # 调用save()去保存对象  必须重写create()方法
             # create() 方法保存成功后会返回 员工实例
