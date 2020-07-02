@@ -19,10 +19,10 @@ class Book(BaseModel):
     book_name = models.CharField(max_length=128)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     pic = models.ImageField(upload_to="img", default="img/1.jpeg")
-    publish = models.ForeignKey(to="Press",  # 关联表
+    publish = models.ForeignKey(to="Press",                # 关联表
                                 on_delete=models.CASCADE,  # 级联删除
-                                db_constraint=False,  # 删除后对应字段的值可以为空
-                                related_name="books")  # 反向查询的名称
+                                db_constraint=False,       # 删除后对应字段的值可以为空
+                                related_name="books")     # 反向查询的名称
     authors = models.ManyToManyField(to="Author", db_constraint=False, related_name="books")
 
     class Meta:
@@ -32,9 +32,6 @@ class Book(BaseModel):
 
     def __str__(self):
         return self.book_name
-
-    # def aaa(self):
-    #     return "aaa"
 
     # 自定义序列化字段  作为类属性
     @property

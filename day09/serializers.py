@@ -52,5 +52,5 @@ class BookModelSerializer(serializers.ModelSerializer):
         price = attrs.get("price", 0)
         # 没有获取到 price  所以是 NoneType
         if price > 90:
-            raise serializers.ValidationError("超过设定的最高价钱~")
+            raise serializers.ValidationError("超过设定的最高价钱~~")
         return attrs

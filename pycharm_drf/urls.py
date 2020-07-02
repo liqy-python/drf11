@@ -28,6 +28,7 @@ urlpatterns = [
     # 指定图片上传的目录
     url(r"^media/(?P<path>.*)", serve, {"document_root": settings.MEDIA_ROOT}),
     path("day09/", include("day09.urls")),
+    path("day10/", include("day10.urls")),
 ]
 
 

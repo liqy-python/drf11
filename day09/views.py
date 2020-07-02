@@ -22,8 +22,6 @@ class BookAPIView(APIView):
         return APIResponse(results=data_ser)
 
 
-# GenericAPIView继承了APIView, 两者完全兼容
-# 重点分析GenericAPIView 在APIView的基础上完成了哪些事情
 class BookGenericAPIView(ListModelMixin,
                          RetrieveModelMixin,
                          CreateModelMixin,
@@ -33,7 +31,7 @@ class BookGenericAPIView(ListModelMixin,
     # 获取当前视图所操作的模型 与序列化器类
     queryset = Book.objects.filter(is_delete=False)
     serializer_class = BookModelSerializer
-    # 指定获取单条信息的主键的名称
+    # 指定获取单条信息的主键的名称,默认pk
     lookup_field = "id"
 
     # 通过继承ListModelMixin 提供self.list完成了查询所有

@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'day07api',
     'day07homework',
     'day08api',
-    'day09'
+    'day09',
+    'day10',
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,4 @@ REST_FRAMEWORK = {
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 MEDIA_URL = "/media/"
+
