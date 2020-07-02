@@ -12,7 +12,9 @@ urlpatterns = [
     path("list/", views.BookListAPIVIew.as_view()),
     path("list/<str:id>/", views.BookListAPIVIew.as_view()),
 
-    path("set/", views.BookGenericViewSet.as_view({"post": "user_login", "get": "get_user_count"})),
+    path("set/", views.BookGenericViewSet.as_view({"post": "user_login","get": "get_user_count"})),
     path("set/<str:id>/", views.BookGenericViewSet.as_view({"post": "user_login"})),
 
+    path("reg/", views.BookGenericViewReg.as_view({"get": "create_user_count"})),
+    path("reg/<str:id>/", views.BookGenericViewReg.as_view({"post": "user_register"})),
 ]

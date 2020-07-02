@@ -15,12 +15,7 @@ class BookModelSerializer(serializers.ModelSerializer):
         model = Book
         # fields应该填写哪些字段  应该填写序列化与反序列化字段的并集
         fields = ("book_name", "price", "publish", "authors", "pic")
-
-        # 为修改多个图书对象提供ListSerializer
         # list_serializer_class = BookListSerializer
-
-        # 添加DRF所提供的校验规则
-        # 通过此参数指定哪些字段是参与序列化的  哪些字段是参与反序列化的
         extra_kwargs = {
             "book_name": {
                 "required": True,  # 设置为必填字段
@@ -58,5 +53,4 @@ class BookModelSerializer(serializers.ModelSerializer):
         # 没有获取到 price  所以是 NoneType
         if price > 90:
             raise serializers.ValidationError("超过设定的最高价钱~")
-
         return attrs

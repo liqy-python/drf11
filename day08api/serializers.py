@@ -89,6 +89,7 @@ class BookListSerializer(serializers.ListSerializer):
     # 使用此序列化器完成修改多个对象
     def update(self, instance, validated_data):
         # 当前调用序列化器类  要修改的对象 要修改的数据
+        # type(self) serializers.BookListSerializer         type(self.child)serializers.BookModelSerializerV2
         print(type(self),instance,validated_data,type(self.child))
         # TODO 将群改 改变成一次改一个  遍历修改
         for index, obj in enumerate(instance):

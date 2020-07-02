@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 
 from day08api.models import Book
+from utils.response import APIResponse
 from .serializers import BookModelSerializer, BookDeModelSerializer, BookModelSerializerV2
 
 
@@ -61,11 +62,12 @@ class BookAPIViewV2(APIView):
         else:
             book_list = Book.objects.filter(is_delete=False)
             book_list_ser = BookModelSerializerV2(book_list, many=True).data
-            return Response({
-                "status": status.HTTP_200_OK,
-                "message": "查询所有图书成功",
-                "results": book_list_ser
-            })
+            # return Response({
+            #     "status": status.HTTP_200_OK,
+            #     "message": "查询所有图书成功",
+            #     "results": book_list_ser
+            # })
+            return APIResponse(status.HTTP_200_OK,"查询所有图书成功",results= book_list_ser)
 
     def post(self, request, *args, **kwargs):
         """
@@ -84,11 +86,10 @@ class BookAPIViewV2(APIView):
                 "message": "请求参数格式有误",
             })
 
-        book_ser = BookModelSerializerV2(data=request_data, many=many)
+        book_ser = BookModelSerializerV2(data=request_data, many=many, context={"request": request})
         # 校验数据是否合法 raise_exception：一旦校验失败 立即抛出异常
         book_ser.is_valid(raise_exception=True)
         book_obj = book_ser.save()
-
         return Response({
             "status": status.HTTP_200_OK,
             "message": "添加图书成功",

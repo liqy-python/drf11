@@ -16,11 +16,9 @@ from .serializers import BookModelSerializer
 
 
 class BookAPIView(APIView):
-
     def get(self, request, *args, **kwargs):
         book_list = Book.objects.filter(is_delete=False)
         data_ser = BookModelSerializer(book_list, many=True).data
-
         return APIResponse(results=data_ser)
 
 
@@ -56,9 +54,7 @@ class BookGenericAPIView(ListModelMixin,
         book_list = self.get_queryset()
         # 获取要使用序列化器
         # data_ser = BookModelSerializer(book_obj).data
-        data_ser = self.get_serializer(book_list, many=True)
-        data = data_ser.data
-
+        data = self.get_serializer(book_list, many=True).data
         return APIResponse(results=data)
 
     def get(self, request, *args, **kwargs):
@@ -66,9 +62,7 @@ class BookGenericAPIView(ListModelMixin,
         # book_obj = Book.objects.get(pk=user_id, is_delete=False)
         book_obj = self.get_object()
         # data_ser = BookModelSerializer(book_obj).data
-        data_ser = self.get_serializer(book_obj)
-        data = data_ser.data
-
+        data = self.get_serializer(book_obj).data
         return APIResponse(results=data)
     """
 
@@ -77,12 +71,12 @@ class BookGenericAPIView(ListModelMixin,
         response = self.create(request, *args, **kwargs)
         return APIResponse(results=response.data)
 
-    # 单整体改
+    # 整体改   单
     def put(self, request, *args, **kwargs):
         response = self.update(request, *args, **kwargs)
         return APIResponse(results=response.data)
 
-    # 单局部改
+    # 局部改   单
     def patch(self, request, *args, **kwargs):
         response = self.partial_update(request, *args, **kwargs)
         return APIResponse(results=response.data)
@@ -110,6 +104,20 @@ class BookGenericViewSet(viewsets.ModelViewSet):
         return self.retrieve(request, *args, **kwargs)
 
     def get_user_count(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+
+class BookGenericViewReg(viewsets.ModelViewSet):
+    queryset = Book.objects.filter(is_delete=False)
+    serializer_class = BookModelSerializer
+    lookup_field = "id"
+
+    # 如何确定post请求是需要注册
+    def user_register(self, request, *args, **kwargs):
+        # 可以在此方法中完成用户注册的逻辑
+        return self.create(request, *args, **kwargs)
+
+    def create_user_count(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
 
