@@ -129,20 +129,43 @@ STATIC_URL = '/static/'
 # 配置DRF的相关参数
 REST_FRAMEWORK = {
     # 配置DRF全局的渲染器
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',  # json格式的渲染器
-        # 'rest_framework.renderers.BrowsableAPIRenderer',    # 浏览器渲染  可视化的API
-        # 'rest_framework.renderers.TemplateHTMLRenderer',    # 指定页面返回
-    ],
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'rest_framework.renderers.JSONRenderer',  # json格式的渲染器
+    #     'rest_framework.renderers.BrowsableAPIRenderer',    # 浏览器渲染  可视化的API
+    #     'rest_framework.renderers.TemplateHTMLRenderer',    # 指定页面返回
+    # ],
+
     # 配置全局的解析器
-    'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',  # json解析器
-        'rest_framework.parsers.FormParser',  # www-url-encode
-        'rest_framework.parsers.MultiPartParser'  # 只支持表单参数解析  formata
-    ],
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     'rest_framework.parsers.JSONParser',  # json解析器
+    #     'rest_framework.parsers.FormParser',  # www-url-encode
+    #     'rest_framework.parsers.MultiPartParser'  # 只支持表单参数解析  formata
+    # ],
+
     # 全局异常处理的方法
     # 'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
     'EXCEPTION_HANDLER': 'utils.exceptions.exception_handler',  # 使用自定的异常
+
+    # 系统默认的认证器配置
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # 基于会话
+        'rest_framework.authentication.BasicAuthentication',     # Basic
+        # 全局配置自定义认证器
+        'day10.authentication.MyAuth',
+    ],
+
+    # 权限类配置
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+
+    # 频率类配置
+    'DEFAULT_THROTTLE_CLASSES': [],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': "3/m",
+        'anon': None,
+        'send': "1/m",
+    },
 }
 
 # 静态资源的目录
@@ -150,3 +173,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 MEDIA_URL = "/media/"
 
+# 配置django默认的user表  "app名字.模型名"
+AUTH_USER_MODEL = "day10.User"
